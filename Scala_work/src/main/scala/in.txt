@@ -2,8 +2,8 @@
 
 /list
 
-/delete_poll (55)
-
-/list
+/result (55)
 
 /start_poll (12)
+
+/list

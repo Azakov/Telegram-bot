@@ -1,9 +1,9 @@
-/create_poll (how?) (yes) (after) (12:28:30,18:02:03) 
+/create_poll (how?) (yes) (after) (12:28:30,18:02:03)
 
 /list
 
-/delete_poll (55)
-
-/list
+/result (55)
 
 /start_poll (12)
+
+/list
