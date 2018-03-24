@@ -1,9 +1,13 @@
-/create_poll (how?) (yes) (after) (12:28:30,18:02:03)
+/create_poll (how are you?) (yes) (afterstop) (12:28:30,18:02:03)
 
-/list
+/create_poll (how are you?) (yefdfss)
 
 /result (55)
 
-/start_poll (12)
+/list
+
+/delete_poll (88)
 
 /list
+
+/start_poll (55)

@@ -9,17 +9,21 @@ class PollRepoInMemory extends PollRepo {
 
   override def delete(id: Int): Unit = polls -= id
 
-  override def isLaunch(id: Int): Boolean = polls.get(id).get.launch
+  override def isLaunch(id: Int): Boolean = polls(id).launch
 
 
   override def isContains(id: Int): Boolean = polls.contains(id)
 
-  override def hasStart(id: Int): Boolean = polls.get(id).get.timesUp != None
+  override def hasStart(id: Int): Boolean = polls(id).timesUp.getOrElse(None).nonEmpty
 
-  override def start(id: Int): Unit = polls.get(id).get.launch = true
+  override def start(id: Int): Unit = {
+    polls(id).launch = true
+    polls(id).used = true}
 
-  override def hasEnd(id: Int): Boolean = polls.get(id).get.timesDown != None
+  override def hasEnd(id: Int): Boolean = polls(id).timesDown.getOrElse(None).nonEmpty
 
-  override def end(id: Int): Unit = polls.get(id).get.launch = false
+  override def end(id: Int): Unit = {
+    polls(id).launch = false
+    polls(id).used = true}
 
 }
