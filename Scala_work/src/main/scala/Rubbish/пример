@@ -7,17 +7,66 @@
   } yield CreatePoll(a, b)
 
   for {
-    data <- request
-    cmd <- parse(data)
-    handler <- route(cmd)
+    data <- request прием данных в дату
+    cmd <- parse(data) париснг даты и возврат типа комнады = вернуть трейт(?)
+    handler <- route(cmd) это и то что ниже возвращает результат команды как результат команды
     res <- handler.handle(cmd)
   } yield res
 
   res: Try[String]
 
   res match {
-    case Success(res) =>v socket.write(res)
+    case Success(res) => socket.write(res)
     case Failure(th) => socket.write("FAILED: "+th.getMessage)
   }
 
   cmd: Try[CreatePoll] */
+
+
+  // def applyParser(input:String):Either[String,Command]=
+  //   parse(commands,input) match {
+  //     case Success(a, _) => Right(a)
+  //     case NoSuccess(msg, _) => Left(msg)
+  //   }
+  //  def main(): Unit ={
+  //    val rep = new repo
+  //    val res = for {
+  //      cmd<-Parser.applyParser("sss")
+  //      r <- Process.process(cmd).run()
+  //    }repo
+  //  }
+  //  def procsess(rep:PollRepoInMemory, cmd:Commands):Either[String,String]= {
+  //    cmd match {
+  //      case cp: CommandCreatePoll => cmdCreatePoll
+  //        case
+  //    }
+  //  }
+  //  def CreatePoll(cp:CreatePoll, repo :Repo): Either[String,String] ={
+  //    val poll = Poll(...)
+  //    val id = Try[repo.store(poll)].fold{
+  //
+  //      fa=>Left(fa.getmsg)
+  //        fb => Right(fb)
+  //    }
+  //  }
+  //
+  //  case class Repo[A](run: Repo => A ){
+  //    ???desk
+  //
+  //  }
+  //  private def get(id:Int):RepoOp[Option[Poll]] = RepoOp{
+  //    repo => repo.
+  //  }
+  //  private def store(p:Poll):RepoOp[Int] = RepoOp{
+  //    repo => repo.save(p)
+  //  }
+  //
+  //
+  //  private def StartPoll(id:Int): RepoOp[Either[String, Int]]
+  //  = {
+  //    for {
+  //      poll <- get (id)
+  //      newPoll = poll,copy(start == true)
+  //        _ <- upate (id , newPoll)
+  //    }yield Right(id)
+  //  }

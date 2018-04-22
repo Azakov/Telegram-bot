@@ -1,0 +1,9 @@
+/list
+
+/create_poll (yes) (afterstop) (12:28:30,18:02:03)
+
+/delete_poll (55)
+
+/list
+
+/start_poll (55)

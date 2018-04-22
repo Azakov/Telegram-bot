@@ -1,0 +1,23 @@
+
+/*
+  val cmd = for {
+    title <- ttl
+    a <- timesUp
+    b <- timesDown
+  } yield CreatePoll(a, b)
+
+  for {
+    data <- request прием данных в дату
+    cmd <- parse(data) париснг даты и возврат типа комнады = вернуть трейт(?)
+    handler <- route(cmd) это и то что ниже возвращает результат команды как результат команды
+    res <- handler.handle(cmd)
+  } yield res
+
+  res: Try[String]
+
+  res match {
+    case Success(res) => socket.write(res)
+    case Failure(th) => socket.write("FAILED: "+th.getMessage)
+  }
+
+  cmd: Try[CreatePoll] */

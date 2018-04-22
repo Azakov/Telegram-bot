@@ -1,0 +1,22 @@
+
+В Main.scala:
+(в метод main все заменяем/комментим, вставаляем это)
+val DateOfPoll = new PollRepoInMemory
+val cmd1 = CommandCreatePoll("hello"):: CommandList() :: CommandResult(55):: CommandStartPoll(55)::
+  CommandStopPoll(55)::CommandResult(55)::CommandDeletePoll(55) :: CommandList() :: List()
+    val result1 = Processor.process(cmd1,DateOfPoll)
+    println(result1)
+
+В Processor.scala:
+(просто заменить/закомментить метод  process)
+def process(cmd1: List[Commands], rep: PollRepoInMemory): List[Either[String, String]] = {
+     cmd1.map(cmd => cmd match {
+      case cmd: CommandCreatePoll => cmdCreatePoll(cmd, rep)
+      case cmd: CommandList => cmdList(cmd, rep)
+      case cmd: CommandStartPoll => cmdStartPoll(cmd, rep)
+      case cmd: CommandResult => cmdResult(cmd, rep)
+      case cmd: CommandDeletePoll => cmdDeletePoll(cmd, rep)
+      case cmd: CommandStopPoll => cmdStopPoll(cmd, rep)
+    })
+
+В КОНСОЛЕ ВСЕ ВЫВЕДЕТСЯ, ПРОСТО ОБЫЧНО ЗАПУСТИТИ(НЕ ЗАБУДЬ ВСЕ ВЕРНУТЬ)
