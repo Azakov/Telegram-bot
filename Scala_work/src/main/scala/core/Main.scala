@@ -1,18 +1,24 @@
 package core
 
+import java.util.{Calendar, Date}
+
+import info.mukel.telegrambot4s.models.User
+
 
 object Main {
   def main(args: Array[String]) {
-    val DateOfPoll = new PollRepoInMemory
-    val data = Request.request // для парсинга байтов в строку - реализуется чуть позже
+
+  MyBot.run()
+  }
+
+  def botRun(user:User,string: String,DateOfPoll:PollRepoInMemory): String ={
     val s  = for {
-      cmd <- ParseData.parseDate("/create_poll (yes) (afterstop) (12:28:30,18:02:03)")   //сюда data
-      result <- Processor.process(cmd,DateOfPoll)
+      cmd <- ParseData.parseDate(string)
+      result <- Processor.process(cmd,DateOfPoll,user)
     } yield result
     s.right.getOrElse("Left") match {
-      case "Left" => println(s.left.get)
-      case  _ => println(s.right.get)
+      case "Left" => s.left.get
+      case  _ => s.right.get
     }
-
   }
 }

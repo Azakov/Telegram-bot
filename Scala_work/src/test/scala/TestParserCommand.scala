@@ -3,10 +3,10 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class TestParserCommand extends FlatSpec with Matchers {
 
-  def assertParseArg(string:String,cmd:Commands): Unit ={
+  def assertParseArg(string:String,cmd:CommandsBot): Unit ={
     assert(ParserCommand.applyParse(string).right.get  ==  cmd)
   }
-  def assertParseArg(pairs: (String,Commands)*): Unit ={
+  def assertParseArg(pairs: (String,CommandsBot)*): Unit ={
     for (i <- pairs) assertParseArg(i._1,i._2)
   }
   "parser" should "list" in{
@@ -42,4 +42,35 @@ class TestParserCommand extends FlatSpec with Matchers {
 
       )
   }
+
+  it should "begin" in {
+    assertParseArg("/begin (55)",CommandBegin(55))
+  }
+
+  it should "end" in {
+    assertParseArg("/end (55)", CommandEnd(55))
+  }
+
+  it should "view" in {
+    assertParseArg("/view", CommandView())
+  }
+
+  it should "delete question" in {
+    assertParseArg("/delete_question (55)",CommandDeleteQuestion(55))
+  }
+
+  it should "answer" in {
+    assertParseArg("/answer (1) (no)",CommandAnswer(1,"no"))
+  }
+
+  it should "add question" in {
+    assertParseArg(
+      ("/add_question (Как дела?) (open) good bad", CommandAddQuestion("Как дела?",QuestionType.open,"good bad")),
+
+      ("/add_question (Как дела?) (choice) good bad", CommandAddQuestion("Как дела?",QuestionType.choice,"good bad")),
+
+      ("/add_question (Как дела?) (multi) good bad", CommandAddQuestion("Как дела?",QuestionType.multi,"good bad"))
+    )
+  }
+
 }

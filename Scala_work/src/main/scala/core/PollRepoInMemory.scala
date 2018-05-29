@@ -1,7 +1,13 @@
 package core
 
+import java.util.{Calendar, Date}
+
+import info.mukel.telegrambot4s.models.User
+
 class PollRepoInMemory extends PollRepo {
   var polls: Map[Int, Poll] = Map.empty
+
+
 
   override def store(poll: Poll): Unit = polls += (poll.id -> poll)
 
@@ -19,9 +25,28 @@ class PollRepoInMemory extends PollRepo {
 
   override def start(ids:Int): Unit = {
     val old = polls(ids)
-    val poll = old.copy(launch = true, used = true)
+    val poll = old.copy(launch = true)
     store(poll)
  }
+
+   def checkTimeStart(id:Int): Boolean ={
+    val timeNow = Calendar.getInstance().getTime
+    if (hasStart(id)){
+      if (!polls(id).firstTime.get.before(timeNow))
+        start(id)
+    }
+     polls.get(id).get.used || polls.get(id).get.launch
+  }
+
+   def checkTimeEnd(id:Int): Boolean ={
+    val timeNow = Calendar.getInstance().getTime
+    if (hasEnd(id)){
+      if (polls(id).secondTime.get.before(timeNow))
+        end(id)
+    }
+     polls.get(id).get.used || polls.get(id).get.launch
+  }
+
 
   override def hasEnd(id: Int): Boolean = polls(id).secondTime.nonEmpty
 
