@@ -16,4 +16,6 @@ object ErrorConstants {
   val sorryVisible = "VISIBLE ONLY AFTER STOPPING POLL"
   val sorryUsed = "SORRY, BUT POLL IS USED"
   val errorQuestion = "ERROR BY ANSWER - QUESTION NOT EXIST"
+  val errorLaunchOrUsed = "ERROR BY POLL - POLL IS USED OR POLL IS LAUNCHED"
+  val errorLaunchOrUsed2 = "ERROR BY POLL - POLL IS USED OR POLL IS NOT LAUNCHED"
 }

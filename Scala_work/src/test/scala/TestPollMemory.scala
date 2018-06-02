@@ -54,7 +54,7 @@ class TestPollMemory  extends FlatSpec with Matchers {
     val pollRepo = new PollRepoInMemory
     pollRepo.store(Poll("test1",admin = user,id = 10))
     pollRepo.start(10)
-    assert(pollRepo.get(10).get.launch && pollRepo.get(10).get.used)
+    assert(pollRepo.get(10).get.launch && !pollRepo.get(10).get.used)
 
   }
 

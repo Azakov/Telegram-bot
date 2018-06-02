@@ -130,7 +130,7 @@ class TestProccessor  extends FlatSpec with Matchers {
     val pollRepo = new PollRepoInMemory
     val cmd = CommandBegin(55)
     val testBegin = Processor.cmdBegin(cmd,pollRepo,user)
-    assert(testBegin.left.get == "SORRY, CONTEXT ALREADY BEGIN!")
+    assert(testBegin.left.get == "SORRY, CONTEXT NOT EXIST OR ALREADY BEGIN")
   }
 
   "endSuccess" should "proccess" in {
@@ -151,33 +151,84 @@ class TestProccessor  extends FlatSpec with Matchers {
 
   "viewSuccess" should "proccess" in {
     val pollRepo = new PollRepoInMemory
-    val poll = Poll("test1",admin = user,id = 55)
+    val poll = Poll("test1",admin = user)
     val pollCmd = CommandCreatePoll(poll.name,
       poll.anon,poll.visible,poll.firstTime,poll.secondTime)
     val pollC = Processor.cmdCreatePoll(pollCmd,pollRepo,user)
-    val cmdB = CommandBegin(55)
+    val cmdB = CommandBegin(pollC.right.get.toInt)
+    val nPoll = poll.copy(id = pollC.right.get.toInt)
     Processor.cmdBegin(cmdB,pollRepo,user)
-    val cmdE = CommandEnd(55)
-    Processor.cmdEnd(cmdE,pollRepo,user)
     val cmd = CommandView()
     val testView = Processor.cmdView(cmd,pollRepo,user)
-    assert(testView.right.get == "user name - id poll \n type question \n question \n answers")
+    assert(testView.right.get == Response.viewOk(nPoll,user))
   }
 
   "viewFail" should "proccess" in {
     val pollRepo = new PollRepoInMemory
     val cmd = CommandView()
     val testBegin = Processor.cmdView(cmd,pollRepo,user)
-    assert(testBegin.left.get == "SORRY, CONTEXT NOT BEGIN")
+    assert(testBegin.left.get == "ERROR BY ID - NOT EXIST!")
   }
 
   "addQuestionSuccess" should "proccess" in {
     val pollRepo = new PollRepoInMemory
-    val cmdB = CommandBegin(55)
-    assert(Processor.cmdBegin(cmdB,pollRepo,user).right.get == "SUCCESS BEGIN")
+    val poll = Poll("test1",admin = user)
+    val pollCmd = CommandCreatePoll(poll.name,
+      poll.anon,poll.visible,poll.firstTime,poll.secondTime)
+    val pollC = Processor.cmdCreatePoll(pollCmd,pollRepo,user)
+    val cmdBe = CommandBegin(pollC.right.get.toInt)
+    val nPoll = poll.copy(id = pollC.right.get.toInt)
+    Processor.cmdBegin(cmdBe,pollRepo,user)
+
     val cmd = CommandAddQuestion("hello",QuestionType.open)
     val testAdd = Processor.cmdAddQuestion(cmd,pollRepo,user)
-    assert(Processor.currentContext.checkContext(user,pollRepo) == "0")
+    assert(Processor.currentContext.checkContext(user,pollRepo))
   }
+
+  "addQuestionFail" should "proccess" in {
+    val pollRepo = new PollRepoInMemory
+    val poll = Poll("test1",admin = user)
+    val pollCmd = CommandCreatePoll(poll.name,
+      poll.anon,poll.visible,poll.firstTime,poll.secondTime)
+    val pollC = Processor.cmdCreatePoll(pollCmd,pollRepo,user)
+    val cmdBe = CommandBegin(pollC.right.get.toInt)
+    val nPoll = poll.copy(id = pollC.right.get.toInt)
+    Processor.cmdBegin(cmdBe,pollRepo,user)
+
+    val user2 = User(900,false,"bot1")
+    val cmd = CommandAddQuestion("hello",QuestionType.open)
+    val testAdd = Processor.cmdAddQuestion(cmd,pollRepo,user2)
+    assert(testAdd.left.get == ErrorConstants.sorryContextNotBegin)
+    Processor.cmdBegin(cmdBe,pollRepo,user2)
+
+    val cmd2 = CommandAddQuestion("hello",QuestionType.open)
+    val testAdd2 = Processor.cmdAddQuestion(cmd2,pollRepo,user2)
+    assert(testAdd2.left.get == ErrorConstants.youNotAdmin)
+  }
+
+  "answerSuccess" should "proccess" in {
+    val pollRepo = new PollRepoInMemory
+    val poll = Poll("test1",admin = user)
+    val pollCmd = CommandCreatePoll(poll.name,
+      poll.anon,poll.visible,poll.firstTime,poll.secondTime)
+    val pollC = Processor.cmdCreatePoll(pollCmd,pollRepo,user)
+    val cmdBe = CommandBegin(pollC.right.get.toInt)
+    val nPoll = poll.copy(id = pollC.right.get.toInt)
+    Processor.cmdBegin(cmdBe,pollRepo,user)
+    val cmd1 = CommandAddQuestion("hello",QuestionType.open)
+    Processor.cmdAddQuestion(cmd1,pollRepo,user)
+    val cmd2 = CommandAddQuestion("куда пойдем?",QuestionType.choice,"туда\nсюда\nникуда")
+    Processor.cmdAddQuestion(cmd2,pollRepo,user)
+
+    val cmdS = CommandStartPoll(pollC.right.get.toInt)
+    Processor.cmdStartPoll(cmdS,pollRepo)
+    val cmdA1 = CommandAnswer(1,"hello")
+    val cmdA2 = CommandAnswer(2,"2")
+    assert(Processor.cmdAnswer(cmdA1,pollRepo,user).right.get == Response.answerOk())
+    assert(Processor.cmdAnswer(cmdA2,pollRepo,user).right.get == Response.answerOk())
+
+
+  }
+
 
 }

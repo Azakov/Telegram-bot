@@ -14,6 +14,6 @@ case class Answers( idQuest: Int ,
   }
 
   def multiAnswer():Poll ={
-      poll.storeQuestAnswer(poll.questions(idQuest),user,answer.split(" ").mkString(" "),isAnon)
+      poll.storeQuestAnswer(poll.questions(idQuest),user,answer.split("\n").mkString(" "),isAnon)
   }
 }

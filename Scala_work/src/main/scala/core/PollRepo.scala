@@ -20,4 +20,6 @@ trait PollRepo {
   def hasEnd(id: Int): Boolean
 
   def end(id: Int): Unit
+
+  def isUsed(id: Int): Boolean
 }

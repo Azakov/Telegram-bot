@@ -15,5 +15,5 @@ object Response {
   def answerOk() = "ANSWER SUCCESS"
   def resultOK(string: String) = s"RESULT:\n ${string}"
   def viewOk(poll: Poll,user: User):String = s"""name : ${user.firstName} id: ${user.id}
-   poll: ${poll.id} ${poll.visible} ${poll.anon}"""
+   poll: ${poll.id} visible: ${poll.visible} anonymous: ${poll.anon}"""
 }

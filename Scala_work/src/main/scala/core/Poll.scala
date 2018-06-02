@@ -16,11 +16,8 @@ case  class Poll(name : String,anon : Boolean = true,visible : Boolean = true,
 
   def storeQuestAnswer(question: Question,user: User,answer: Any,anon:Boolean):Poll = {
     val newQuest:Question = question.store(user, answer)
-    println(newQuest)
     val newQuests = questions + (question.idQuest -> newQuest)
-    println(newQuests)
     val poll = copy(questions = newQuests)
-    println(" this"+ poll)
     poll
   }
 
@@ -37,7 +34,7 @@ case  class Poll(name : String,anon : Boolean = true,visible : Boolean = true,
     poll
   }
 
-  def getType(id:Int): QuestionType = questions(id).qType
+  def getTypeQuestion(id:Int): QuestionType = questions(id).qType
 
 }
 

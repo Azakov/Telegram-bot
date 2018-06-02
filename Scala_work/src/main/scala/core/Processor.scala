@@ -37,9 +37,12 @@ object Processor {
   def cmdStartPoll(cmd: CommandStartPoll, PR: PollRepoInMemory): Either[String, String] = {
     if (PR.isContains(cmd.id)){
       if (!PR.hasStart(cmd.id)){
+        if (!PR.isLaunch(cmd.id) && !PR.isUsed(cmd.id)){
+          println(PR.isLaunch(cmd.id) )
           PR.start(cmd.id)
           Right(Response.startOk)
-      } else  Left(ErrorConstants.errorTimeStart)
+        }else Left(ErrorConstants.errorLaunchOrUsed)
+      }else Left(ErrorConstants.errorTimeStart)
     }else Left(ErrorConstants.errorIdExist)
   }
 
@@ -49,8 +52,10 @@ object Processor {
       case true => PR.hasEnd(cmd.id) match {
         case true => Left(ErrorConstants.errorTimeEnd)
         case false =>
-          PR.end(cmd.id)
-          Right(Response.endOk)
+          if (PR.isLaunch(cmd.id) || !PR.isUsed(cmd.id)){
+            PR.end(cmd.id)
+            Right(Response.endOk)
+          }else Left(ErrorConstants.errorLaunchOrUsed2)
       }
     }
   }
@@ -61,7 +66,7 @@ object Processor {
         if (!poll.visible || (poll.visible && poll.used)){
           val listResult = poll.questions.values.
             map(q =>s" Id :${q.idQuest} " +
-              s"${if (!poll.anon)q.voted.map(u => s"User: ${u._1} Answer: ${u._2.toString}" ).mkString(" ")
+              s"${if (!poll.anon)q.voted.map(u => s"User: ${u._1.firstName} Answer: ${u._2.toString}" ).mkString(" ")
               else q.voted.map(u => s"User: Anonymous Answer: ${u._2.toString}" ).mkString(" ")}").mkString("\n")
           Right(Response.resultOK(listResult))
         } else  Left (ErrorConstants.sorryVisible)
@@ -162,7 +167,7 @@ object Processor {
               if (!poll.questions(cmd.id).voted.keys.exists(u => user ==u)){
                 val ans = Answers(cmd.id, cmd.answer, user, poll.anon,poll)
                 println(poll)
-                poll.getType(cmd.id) match {
+                poll.getTypeQuestion(cmd.id) match {
                   case QuestionType.open => {
                     PR.store(ans.openAnswer())
                     println(PR.polls)
